@@ -60,6 +60,13 @@ ruby_block "verify_sha_sum" do
     not_if { install_not_needed }
 end
 
+directory node['nodejs']['dir'] do
+  owner "root"
+  group "root"
+  mode "0755"
+  recursive true
+end
+
 # One hopes that we can trust the contents of the node tarball not to overwrite anything it shouldn't!
 execute "install package to system" do
     command <<-EOF
@@ -67,7 +74,6 @@ execute "install package to system" do
             --strip-components=1  --no-same-owner \
             -C #{destination_dir} \
             #{package_stub}/bin \
-            #{package_stub}/include \
             #{package_stub}/lib \
             #{package_stub}/share
         EOF
